@@ -1,0 +1,61 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+venv/
+env/
+.venv
+.idea/ 
+*.lock
+.env
+
+# Test files
+test_*.py
+*_test.py
+comprehensive_test.py
+enterprise_security_test.py
+test_audit_*.py
+test_c_level_*.py
+test_llm_*.py
+*_SUMMARY.md
+LLM_IMPROVEMENTS.md
+# Logs and metadata
+logs.txt
+metadata.txt
+*.log
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Database and Backups
+chroma_db/
+chroma_db_backup_*/
+
+# Logs and Metrics
+logs/
+.python-version
+
+# Miscellaneous Scripts
+scratch_*.py
+verify_ingestion.py
+practical_example.py
+
+# Documentation
+ARCHITECTURE.md
+QUICK_START.md
+DOCUMENTATION_INDEX.md
+TESTING_GUIDE.md
