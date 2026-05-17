@@ -109,6 +109,32 @@ def query(user=Depends(authenticate), message: str = "Hello"):
             "response": answer
         }
     
+    # 🛡️ Step 1.5: Strict RBAC cross-department keyword check
+    found_keywords = classification.get("keywords_found", [])
+    allowed_depts = [role, "general", "company"]
+    asked_about_other_dept = False
+    
+    for kw in found_keywords:
+        category = kw.split(":")[0]
+        if category not in allowed_depts:
+            asked_about_other_dept = True
+            break
+            
+    if asked_about_other_dept and role != "c_level":
+        answer = "I cannot provide the information of other departments."
+        log_access(
+            username=username,
+            role=role,
+            query=message,
+            status="DENIED",
+            departments_accessed="NONE"
+        )
+        return {
+            "role": role,
+            "query": message,
+            "response": answer
+        }
+
     # 🤖 Step 2: LangChain RAG Query (with RBAC in retriever)
     answer, retrieved_docs = query_with_rag(
         query=message,
@@ -118,19 +144,7 @@ def query(user=Depends(authenticate), message: str = "Hello"):
     
     # 🚫 Access DENIED: No documents available
     if not retrieved_docs:
-        # Check strict RBAC cross-department inquiries
-        found_keywords = classification.get("keywords_found", [])
-        allowed_depts = [role, "general", "company"]
-        asked_about_other_dept = False
-        for kw in found_keywords:
-            category = kw.split(":")[0]
-            if category not in allowed_depts:
-                asked_about_other_dept = True
-                break
-                
-        if asked_about_other_dept and role != "c_level":
-            answer = "I cannot provide the information of other departments."
-
+        answer = handle_no_access(role)
         log_access(
             username=username,
             role=role,
